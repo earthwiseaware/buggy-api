@@ -42,9 +42,10 @@ class Submissions(Resource):
     post_parser = get_parser.copy()
     post_parser.add_argument(
         'submissions',
-        type=list,
+        type=dict,
         required=True,
-        help='Submissions to post to iNaturalist'
+        help='Submissions to post to iNaturalist',
+        action='append'
     )
     post_parser.add_argument(
         'inat_app_id',
@@ -81,10 +82,13 @@ class Submissions(Resource):
         kobo = KoboClient(kwargs['kobo_username'], kwargs['kobo_password'])
         inat = iNaturalistClient(
             kwargs['inat_email'], kwargs['inat_password'], 
-            kwargs['inat_app_id'], kwargs['inat_app_secret']
+            kwargs['inat_app_id'], kwargs['inat_app_secret'],
+            app_url="http://localhost:3000",
+            api_url="http://localhost:4000/v1"
         )
         uid = kwargs['kobo_uid']
         transformed_data = kwargs['submissions']
+        print(kwargs['submissions'])
         for record in transformed_data:
             image_paths = []
             instance = record['instance']
